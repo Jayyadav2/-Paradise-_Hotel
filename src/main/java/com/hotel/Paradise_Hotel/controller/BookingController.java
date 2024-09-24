@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import  java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:5173")
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
@@ -28,7 +28,7 @@ public class BookingController {
 
 
 
-@GetMapping("all-booking")
+@GetMapping("all-bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings(){
         List<BookedRoom> bookings= bookingService.getAllBookings();
         List<BookingResponse> bookingResponses= new ArrayList<>();
@@ -43,10 +43,10 @@ public class BookingController {
 
 
     @GetMapping("/confirmation/{confirmationCode}")
-    public ResponseEntity<?> getBookingByConfirmationCode(String confimationCode){
+    public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode){
 
     try{
-        BookedRoom booking= bookingService.findByBookingConfirmationCode(confimationCode);
+        BookedRoom booking= bookingService.findByBookingConfirmationCode(confirmationCode);
         BookingResponse bookingResponse= getBookingResponse(booking);
         return  ResponseEntity.ok(bookingResponse);
     }catch (ResourceNotFoundException ex){
@@ -85,7 +85,7 @@ public class BookingController {
                 theRoom.getRoomPrice());
 
         return  new BookingResponse(booking.getBookingId(), booking.getCheckInDate(),booking.getCheckOutDate(), booking.getGuestFullName()
-        , booking.getGuestEmail(), booking.getNumOfAdults(), booking.getNumOfChildren(), booking.getTotalNumOfGuest(), booking.getBookingConfirmationCode()
+        , booking.getGuestEmail(), booking.getNumOfAdults(), booking.getNumOfChildren(), booking.getTotalNumOfGuests(), booking.getBookingConfirmationCode()
         , room);
     }
 }

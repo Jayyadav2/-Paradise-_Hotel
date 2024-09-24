@@ -1,6 +1,7 @@
 package com.hotel.Paradise_Hotel.service;
 
 import com.hotel.Paradise_Hotel.exception.InvalidBookingRequestException;
+import com.hotel.Paradise_Hotel.exception.ResourceNotFoundException;
 import com.hotel.Paradise_Hotel.model.BookedRoom;
 import com.hotel.Paradise_Hotel.model.Room;
 import com.hotel.Paradise_Hotel.repository.BookingRepository;
@@ -29,9 +30,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookedRoom findByBookingConfirmationCode(String confimationCode) {
+    public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
 
-        return bookingRepository.findByBookingConfirmationCode(confimationCode);
+        return bookingRepository.findByBookingConfirmationCode(confirmationCode).orElseThrow(() -> new ResourceNotFoundException("Booking not Found"));
     }
 
     @Override
