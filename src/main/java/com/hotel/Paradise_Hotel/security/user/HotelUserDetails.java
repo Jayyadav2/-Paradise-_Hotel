@@ -11,23 +11,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 public class HotelUserDetails implements UserDetails {
-    private  Long id;
-    private String email;
+    private Long id;
+    private  String email;
     private String password;
-
     private Collection<GrantedAuthority> authorities;
 
-    public static HotelUserDetails buildUserDetails(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
+    public static HotelUserDetails buildUserDetails(User user){
+        List<GrantedAuthority> authorities = user.getRoles()
+                .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-        return  new HotelUserDetails(user.getId(), user.getEmail(), user.getPassword(), authorities);
+        return new HotelUserDetails(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                authorities);
+
     }
+
 
 
     @Override
@@ -44,19 +50,24 @@ public class HotelUserDetails implements UserDetails {
     public String getUsername() {
         return email;
     }
-    public  boolean isAccountNonExpired(){
-        return  true;
-    }
 
-    public  boolean isAccountNonLocked(){
+    @Override
+    public boolean isAccountNonExpired() {
         return true;
     }
 
-    public boolean isCredentialsNonExpired(){
-        return  true;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public  boolean isEnabled(){
-        return  true;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
