@@ -6,6 +6,7 @@ import com.hotel.Paradise_Hotel.model.User;
 import com.hotel.Paradise_Hotel.repository.RoleRepository;
 import com.hotel.Paradise_Hotel.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
     private  final  RoleRepository roleRepository;

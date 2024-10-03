@@ -55,17 +55,19 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer :: disable)
-                .exceptionHandling(
-                        exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless APIs
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint)) // Handle auth exceptions
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/rooms/**","/bookings/**")
-                        .permitAll().requestMatchers("/roles/**").hasRole("ADMIN")
-                        .anyRequest().authenticated());
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+                        .requestMatchers("/auth/**").permitAll()  // Allow public access to /auth/**
+                        .requestMatchers("/rooms/**", "/bookings/**").permitAll() // Allow public access to rooms and bookings
+                        .requestMatchers("/roles/**").hasRole("ADMIN")  // Restrict /roles/** to ADMIN role
+                        .anyRequest().authenticated()) // All other requests require authentication
+                .authenticationProvider(authenticationProvider()) // Use your custom authentication provider
+                .addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class); // Add JWT filter before UsernamePasswordAuthenticationFilter
+
+        return http.build(); // Return the security filter chain
     }
+
 
 }

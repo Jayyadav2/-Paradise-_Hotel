@@ -37,6 +37,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        logger.debug("Request URI: {}", requestURI);
+
+        if (requestURI.startsWith("/auth")) {
+            filterChain.doFilter(request, response); // Proceed without JWT validation
+            return;
+        }
         try{
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateToken(jwt)){
@@ -46,6 +53,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.error("Unauthorized request to {}", request.getRequestURI());
+
             }
         }catch (Exception e){
             logger.error("Cannot set user authentication : {} ", e.getMessage());

@@ -17,13 +17,18 @@ import java.util.HashMap;
 import java.util.Map;
 @Component
 public class JwtAuthEntryPoint  implements AuthenticationEntryPoint {
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthEntryPoint.class);
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        logger.error("Unauthorized request to {}", request.getRequestURI());
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        logger.error("Unauthorized request to {}", request.getRequestURI());
+
 
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
@@ -33,5 +38,7 @@ public class JwtAuthEntryPoint  implements AuthenticationEntryPoint {
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
+        logger.error("Unauthorized request to {}", request.getRequestURI());
+
     }
 }
